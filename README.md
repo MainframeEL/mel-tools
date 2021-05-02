@@ -1,6 +1,6 @@
-# almalinux-deploy
+# sunoslinux-deploy
 
-An EL to AlmaLinux migration tool.
+An EL to Sun/OS Linux migration tool.
 
 
 ## Usage
@@ -10,33 +10,28 @@ In order to convert your EL8 operating system to AlmaLinux do the following:
 1. Make a backup of the system. We didn't test all possible scenarios so there
    is a risk that something goes wrong. In such a situation you will have a
    restore point.
-2. Disable Secure Boot because AlmaLinux doesn't support it yet
-   ([almbz#3](https://bugs.almalinux.org/view.php?id=3)). Detailed instructions
-   for bare metal hardware can be found
-   [here](https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/disabling-secure-boot#disable-secure-boot).
-   Instructions for VMWare are available
-   [here](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.security.doc/GUID-898217D4-689D-4EB5-866C-888353FE241C.html).
-3. Download the [almalinux-deploy.sh](almalinux-deploy.sh) script:
+
+2. Download the [sunoslinux-deploy.sh](sunoslinux-deploy.sh) script:
    ```shell
-   $ curl -O https://raw.githubusercontent.com/AlmaLinux/almalinux-deploy/master/almalinux-deploy.sh
+   $ curl -O https://raw.githubusercontent.com/SunOS-Linux/sunoslinux-deploy/master/sunoslinux-deploy.sh
    ```
-4. Run the script and check its output for errors:
+3. Run the script and check its output for errors:
    ```shell
-   $ sudo bash almalinux-deploy.sh
+   $ sudo bash sunoslinux-deploy.sh
      ...
-     Migration to AlmaLinux is completed
+     Migration to Sun/OS Linux is completed
    ```
-5. Ensure that your system was successfully converted:
+4. Ensure that your system was successfully converted:
    ```shell
    # check release file
    $ cat /etc/redhat-release 
-   AlmaLinux release 8.3 (Purple Manul)
+   Sun/OS Linux release 8.3 (Red Sox)
    
-   # check that the system boots AlmaLinux kernel by default
+   # check that the system boots Sun/OS Linux kernel by default
    $ sudo grubby --info DEFAULT | grep AlmaLinux
-   title="AlmaLinux (4.18.0-240.el8.x86_64) 8"
+   title="Sun/OS Linux (4.18.0-240.el8.x86_64) 8"
    ```
-6. Thank you for choosing AlmaLinux!
+5. Thank you for choosing Sun/OS Linux!
 
 
 ## Roadmap
@@ -56,10 +51,10 @@ In order to convert your EL8 operating system to AlmaLinux do the following:
 
 Any contribution is welcome:
 
-* Find and [report](https://github.com/AlmaLinux/almalinux-deploy/issues) bugs.
+* Find and [report](https://github.com/SunOS-Linux/sunoslinux-deploy/issues) bugs.
 * Submit pull requests with bug fixes, improvements and new tests.
 * Test it on different configurations and share your thoughts in
-  [discussions](https://github.com/AlmaLinux/almalinux-deploy/discussions).
+  [discussions](https://github.com/SunOS-Linux/sunoslinux-deploy/discussions).
 
 Technology stack:
 
