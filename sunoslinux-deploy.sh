@@ -51,7 +51,7 @@ report_step_error() {
 
 # Prints program usage information.
 show_usage() {
-    echo -e 'Migrates an EL system to AlmaLinux\n'
+    echo -e 'Migrates an EL system to Sun/OS Linux\n'
     echo -e 'Usage: almalinux-deploy.sh [OPTION]...\n'
     echo '  -h, --help           show this message and exit'
     echo '  -v, --version        print version information and exit'
@@ -149,7 +149,7 @@ assert_supported_system() {
         report_step_error "Check EL${os_version} is supported"
         exit 1
     fi
-    if [[ ${os_type} != 'centos' && ${os_type} != 'almalinux' && \
+    if [[ ${os_type} != 'centos' && ${os_type} != 'sunoslinux' && \
           ${os_type} != 'ol' && ${os_type} != 'rhel' ]]; then
         report_step_error "Check ${os_type} operating system is supported"
         exit 1
@@ -172,24 +172,24 @@ assert_supported_panel() {
 
 # Returns a latest almalinux-release RPM package download URL.
 #
-# $1 - AlmaLinux major version (e.g. 8).
+# $1 - Sun/OS Linux major version (e.g. 8).
 # $2 - System architecture (e.g. x86_64).
 #
 # Prints almalinux-release RPM package download URL.
 get_release_file_url() {
     local -r os_version="${1:0:1}"
     local -r arch="${2}"
-    echo "${ALMA_RELEASE_URL:-https://repo.almalinux.org/almalinux/almalinux-release-latest-${os_version}.${arch}.rpm}"
+    echo "${SUN_RELEASE_URL:-https://packagecloud.io/abdonmorales/sun-BaseOS/el/8/$basearch/sunoslinux-release-${os_version}.${arch}.rpm}"
 }
 
-# Downloads and installs the AlmaLinux public PGP key.
+# Downloads and installs the Sun/OS Linux public PGP key.
 #
 # $1 - Temporary directory path.
 install_rpm_pubkey() {
     local -r tmp_dir="${1}"
-    local -r pubkey_url="${ALMA_PUBKEY_URL:-https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux}"
-    local -r pubkey_path="${tmp_dir}/RPM-GPG-KEY-AlmaLinux"
-    local -r step='Download RPM-GPG-KEY-AlmaLinux'
+    local -r pubkey_url="${ALMA_PUBKEY_URL:-https://packagecloud.io/abdonmorales/sun-BaseOS/gpgkey}"
+    local -r pubkey_path="${tmp_dir}/gpgkey"
+    local -r step='Download RPM-GPG-KEY-sunOSLinux'
     local output
     if ! output=$(curl -f -s -S -o "${pubkey_path}" "${pubkey_url}" 2>&1); then
         report_step_error "${step}" "${output}"
@@ -198,7 +198,7 @@ install_rpm_pubkey() {
         report_step_done "${step}"
     fi
     rpm --import "${pubkey_path}"
-    report_step_done 'Import RPM-GPG-KEY-AlmaLinux to RPM DB'
+    report_step_done 'Import RPM-GPG-KEY-sunOSLinux to RPM DB'
     rm -f "${pubkey_path}"
 }
 
@@ -211,10 +211,10 @@ install_rpm_pubkey() {
 download_release_file() {
     local -r release_url="${1}"
     local -r tmp_dir="${2}"
-    local -r release_path="${tmp_dir}/almalinux-release-latest.rpm"
+    local -r release_path="${tmp_dir}/sunoslinux-release-8.3-4.el8.x86_64.rpm"
     local output
     if ! output=$(curl -f -s -S -o "${release_path}" "${release_url}" 2>&1); then
-        report_step_error 'Download almalinux-release package' "${output}"
+        report_step_error 'Download sunoslinux-release package' "${output}"
         exit 1
     fi
     echo "${release_path}"
@@ -233,7 +233,7 @@ assert_valid_package() {
     fi
 }
 
-# Terminates the program if OS version doesn't match AlmaLinux version.
+# Terminates the program if OS version doesn't match Sun/OS Linux version.
 #
 # $1 - OS version.
 # $2 - almalinux-release package file path.
@@ -272,9 +272,9 @@ cleanup_tmp_dir() {
     rm -fr "${1:?}"
 }
 
-# Converts a CentOS system to AlmaLinux
+# Converts a CentOS system to Sun/OS Linux
 #
-# $1 - almalinux-release RPM package path.
+# $1 - sunoslinux-release RPM package path.
 migrate_from_centos() {
     local -r release_path="${1}"
     local to_remove=''
@@ -339,17 +339,17 @@ distro_sync() {
 install_kernel() {
     if ! output=$(rpm -q kernel 2>&1); then
         if output=$(dnf -y install kernel 2>&1); then
-            report_step_done "Install AlmaLinux kernel"
+            report_step_done "Install Sun/OS Linux kernel"
         else
-            report_step_error "Install AlmaLinux kernel"
+            report_step_error "Install Sun/OS Linux kernel"
         fi
     fi
 }
 
 grub_update() {
     if [ -d /sys/firmware/efi ]; then
-        if [ -d /boot/efi/EFI/almalinux ]; then
-            grub2-mkconfig -o /boot/efi/EFI/almalinux/grub.cfg
+        if [ -d /boot/efi/EFI/sunoslinux ]; then
+            grub2-mkconfig -o /boot/efi/EFI/sunoslinux/grub.cfg
         elif [ -d /boot/efi/EFI/centos ]; then
             grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
         else
@@ -382,16 +382,16 @@ main() {
     assert_supported_panel "${panel_type}" "${panel_version}"
 
     release_url=$(get_release_file_url "${os_version}" "${arch}")
-    tmp_dir=$(mktemp -d --tmpdir="${BASE_TMP_DIR}" .alma.XXXXXX)
+    tmp_dir=$(mktemp -d --tmpdir="${BASE_TMP_DIR}" .sol.XXXXXX)
     # shellcheck disable=SC2064
     trap "cleanup_tmp_dir ${tmp_dir}" EXIT
     install_rpm_pubkey "${tmp_dir}"
 
     release_path=$(download_release_file "${release_url}" "${tmp_dir}")
-    report_step_done 'Download almalinux-release package'
+    report_step_done 'Download sunoslinux-release package'
 
     assert_valid_package "${release_path}"
-    report_step_done 'Verify almalinux-release package'
+    report_step_done 'Verify sunoslinux-release package'
 
     assert_compatible_os_version "${os_version}" "${release_path}"
 
@@ -410,7 +410,7 @@ main() {
     restore_issue
     install_kernel
     grub_update
-    printf '\n\033[0;32mMigration to AlmaLinux is completed\033[0m\n'
+    printf '\n\033[0;32mMigration to Sun/OS Linux is completed\033[0m\n'
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
