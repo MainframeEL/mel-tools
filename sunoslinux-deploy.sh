@@ -149,7 +149,7 @@ assert_supported_system() {
         report_step_error "Check EL${os_version} is supported"
         exit 1
     fi
-    if [[ ${os_type} != 'centos' && ${os_type} != 'sunoslinux' && \
+    if [[ ${os_type} != 'centos' && ${os_type} != 'almalinux' && \
           ${os_type} != 'ol' && ${os_type} != 'rhel' ]]; then
         report_step_error "Check ${os_type} operating system is supported"
         exit 1
@@ -297,7 +297,7 @@ migrate_from_centos() {
     [ -d /usr/share/doc/redhat-release ] && rm -r /usr/share/doc/redhat-release
     [ -d /usr/share/redhat-release ] && rm -r /usr/share/redhat-release
     rpm -Uvh "${release_path}"
-    report_step_done 'Install almalinux-release package'
+    report_step_done 'Install sunoslinux-release package'
     # replace GUI packages
     for pkg_name in ${BRANDING_PKGS}; do
         if rpm -q "${pkg_name}" &>/dev/null; then
