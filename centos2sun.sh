@@ -58,7 +58,7 @@ exit_message() {
 } >&2
 
 final_message() {
-  echo "An error occurred while we were attempting to convert your system to Rocky Linux. Your system may be unstable. Script will now exit to prevent possible damage."
+  echo "An error occurred while we were attempting to convert your system to Sun/OS Linux. Your system may be unstable. Script will now exit to prevent possible damage."
 }
 
 ## The actual work
