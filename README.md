@@ -28,7 +28,7 @@ In order to convert your EL8 operating system to AlmaLinux do the following:
    Sun/OS Linux release 8.3 (Red Sox)
    
    # check that the system boots Sun/OS Linux kernel by default
-   $ sudo grubby --info DEFAULT | grep AlmaLinux
+   $ sudo grubby --info DEFAULT | grep Linux
    title="Sun/OS Linux (4.18.0-240.el8.x86_64) 8"
    ```
 5. Thank you for choosing Sun/OS Linux!
