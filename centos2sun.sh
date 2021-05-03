@@ -1,8 +1,8 @@
 #!/bin/bash
-# label <label@rockylinux.org>
+# 2021 Sun/OS Linux
 # Supports only CentOS 8.3
 
-## Rocky is RC status. Using this script means you accept all risks of system instability.
+## Sun/OS Linux is RC status. Using this script means you accept all risks of system instability.
 
 set -e
 unset CDPATH
@@ -16,7 +16,7 @@ export LANG=en_US.UTF-8
 
 SUPPORTED_RELEASE="8.3"
 SUPPORTED_MAJOR="8"
-current_url="https://dl.rockylinux.org/pub/rocky/${SUPPORTED_RELEASE}/BaseOS/x86_64/os/Packages"
+current_url="https://packagecloud.io/abdonmorales/sun-BaseOS/el/${SUPPORTED_MAJOR}/$basearch"
 # These are packages that can be swapped safely over and will have more added over time.
 packages_to_swap=(
   centos-backgrounds \
