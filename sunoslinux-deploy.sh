@@ -1,9 +1,6 @@
 #!/bin/bash
-# Description: EL to AlmaLinux migration script.
+# Description: EL to Sun/OS Linux migration script.
 # License: GPLv3.
-# Environment variables:
-#   ALMA_RELEASE_URL - almalinux-release package download URL.
-#   ALMA_PUBKEY_URL - RPM-GPG-KEY-AlmaLinux download URL.
 
 set -euo pipefail
 
